@@ -97,3 +97,69 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         })
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const url = "https://smileschool-api.hbtn.info/latest-videos";
+    const carouselInner = document.querySelector("#carouselExampleControls3 .carousel-inner");
+    const loader = document.querySelector(".loader");
+
+    fetch(url)
+        .then((response) => response.json())
+        .then((tutorials) => {
+            loader.remove();
+
+            tutorials.forEach((latest, index) => {
+                const cardHTML = `
+                    <div class="carousel-item ${index === 0 ? "active" : ""}">
+                        <div class="card">
+                            <img src="${latest.thumb_url}" class="card-img-top" alt="${latest.title} thumbnail" />
+                            <div class="card-img-overlay text-center">
+                                <img src="images/play.png" alt="Play" width="64px" height="64px" class="play-overlay mx-auto" />
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title font-weight-bold">${latest.title}</h5>
+                                <p class="card-text text-muted">${latest["sub-title"]}</p>
+                                <div class="creator d-flex align-items-center">
+                                    <img src="${latest.author_pic_url}" alt="${latest.author}'s profile" width="30px" class="rounded-circle" />
+                                    <h6 class="pl-3 m-0 main-color">${latest.author}</h6>
+                                </div>
+                                <div class="info pt-3 d-flex justify-content-between">
+                                    <div class="rating">
+                                        ${Array.from({ length: 5 }, (_, i) => i < latest.star ? 
+                                        '<img src="images/star_on.png" alt="star on" width="15px" class="mr-1">' : 
+                                        '<img src="images/star_off.png" alt="star off" width="15px" class="mr-1">'
+                                        ).join('')}
+                                    </div>
+                                    <span class="main-color">${latest.duration}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                carouselInner.innerHTML += cardHTML;
+            });
+
+            $('#carouselExampleControls3 .carousel-inner').slick({
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                prevArrow: '.latest-left',
+                nextArrow: '.latest-right',
+                arrow: true,
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            slidesToShow: 2,
+                        },
+                    },
+                    {
+                        breakpoint: 576,
+                        settings: {
+                            slidesToShow: 1,
+                        },
+                    },
+                ],
+            });
+        })
+});
+$('.loader').hide();
