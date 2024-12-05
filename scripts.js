@@ -162,4 +162,28 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         })
 });
-$('.loader').hide();
+
+$(document).ready(function() {
+    $.get('https://smileschool-api.hbtn.info/quotes', function(data) {
+      $('.loader').hide();
+      let quotesHtml = '';
+
+      data.forEach(quote, index => {
+        quotesHtml += `
+          <div class="carousel-item ${index === 0 ? 'active' : ''}">
+            <div class="row">
+              <div class="col-sm-3 text-center">
+                <img class="rounded-circle" src="${quote.pic_url}" width="150" height="150" alt="${quote.name}">
+              </div>
+              <div class="col-sm-8 ml-3">
+                <p>${quote.text}</p>
+                <p><span class="font-weight-bold">${quote.name}</span><br>
+                <span class="font-italic">${quote.title}</span></p>
+              </div>
+            </div>
+          </div>`;
+      });
+
+      $('.carousel-inner').html(quotesHtml)
+    });
+  });
